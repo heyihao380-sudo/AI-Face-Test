@@ -1,3 +1,5 @@
 flask
 baidu-aip
 gunicorn
+chardet
+requests
