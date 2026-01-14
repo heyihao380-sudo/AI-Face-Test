@@ -5,27 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 颜值美学实验室 | 旗舰版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
         
         :root {
             /* 七彩虹主题色 */
             --rainbow-bg: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            --header-gradient: linear-gradient(to right, #a18cd1 0%, #fbc2eb 100%); /* 紫粉渐变 */
-            --btn-gradient: linear-gradient(to right, #fa709a 0%, #fee140 100%); /* 橙红渐变 */
+            --header-gradient: linear-gradient(to right, #a18cd1 0%, #fbc2eb 100%);
+            --btn-gradient: linear-gradient(to right, #fa709a 0%, #fee140 100%);
             
-            /* 板块专属色 */
-            --color-senses: #ff6b6b; /* 红 */
-            --color-bone: #4facfe;   /* 蓝 */
-            --color-skin: #43e97b;   /* 绿 */
-            --color-makeup: #c471ed; /* 紫 */
+            --color-senses: #ff6b6b;
+            --color-bone: #4facfe;
+            --color-skin: #43e97b;
+            --color-makeup: #c471ed;
             
             --text-dark: #2d3436;
             --text-gray: #636e72;
         }
 
         body {
-            background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%); /* 全局柔和彩虹背景 */
+            background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
             font-family: 'Noto Sans SC', sans-serif;
             margin: 0; padding: 0 0 40px 0;
             display: flex; justify-content: center;
@@ -34,61 +36,53 @@
 
         .container {
             width: 100%; max-width: 480px;
-            background: rgba(255, 255, 255, 0.95); /* 半透明白底 */
+            background: rgba(255, 255, 255, 0.95);
             min-height: 100vh;
             box-shadow: 0 0 30px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
+            position: relative;
         }
 
-        /* 彩虹 Header */
+        /* 顶部 Header */
         .header {
             background: var(--header-gradient);
-            padding: 50px 20px 40px;
-            text-align: center;
-            color: white;
+            padding: 50px 20px 40px; text-align: center; color: white;
             border-radius: 0 0 30px 30px;
             box-shadow: 0 10px 20px rgba(161, 140, 209, 0.3);
         }
         .header h1 { margin: 0; font-size: 26px; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header p { margin: 8px 0 0; font-size: 13px; opacity: 0.9; letter-spacing: 1px; font-weight: 300; }
+        .header p { margin: 8px 0 0; font-size: 13px; opacity: 0.9; letter-spacing: 1px; }
 
         .content-box { padding: 20px; margin-top: -30px; }
 
         /* 卡片通用样式 */
         .card {
             background: white; border-radius: 20px; padding: 25px 20px;
-            margin-bottom: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+            margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
-        .card:hover { transform: translateY(-2px); }
 
-        /* 欢迎页输入框 */
-        .input-group { margin-top: 30px; text-align: center; }
-        .code-input { 
-            padding: 15px; border: 2px solid #e0e0e0; border-radius: 12px; width: 70%; 
-            text-align: center; font-size: 16px; outline: none; transition: 0.3s;
-            background: #f9f9f9;
-        }
-        .code-input:focus { border-color: #fbc2eb; background: white; }
-        
-        /* 彩虹按钮 */
+        /* 按钮 */
         .btn-rainbow {
             background-image: var(--btn-gradient);
             color: white; border: none; padding: 15px 40px; border-radius: 50px;
             font-size: 16px; font-weight: bold; cursor: pointer;
             box-shadow: 0 5px 15px rgba(250, 112, 154, 0.4);
-            margin-top: 20px; width: 100%; transition: 0.3s;
+            width: 100%; transition: 0.3s; margin-top: 10px;
         }
         .btn-rainbow:active { transform: scale(0.98); }
 
+        /* 输入框 & 上传 */
+        .input-group { margin-top: 30px; text-align: center; }
+        .code-input { 
+            padding: 15px; border: 2px solid #e0e0e0; border-radius: 12px; width: 70%; 
+            text-align: center; font-size: 16px; outline: none; background: #f9f9f9;
+        }
         .upload-zone {
             border: 2px dashed #a18cd1; border-radius: 15px; padding: 40px 20px;
-            margin-top: 20px; cursor: pointer; text-align: center;
-            background: #fcfaff;
+            margin-top: 20px; cursor: pointer; text-align: center; background: #fcfaff;
         }
 
-        /* 结果页总分 - 彩虹字 */
+        /* 结果页样式 */
         .score-section { text-align: center; padding: 10px 0 30px; }
         .score-big { 
             font-size: 72px; font-weight: 800; line-height: 1.1;
@@ -97,49 +91,63 @@
         }
         .score-label { color: var(--text-gray); font-size: 14px; letter-spacing: 2px; }
 
-        /* 标题带颜色 */
         .card-header {
             display: flex; align-items: center; margin-bottom: 20px;
             font-size: 17px; font-weight: bold; color: var(--text-dark);
             padding-bottom: 10px; border-bottom: 1px dashed #eee;
         }
         
-        /* 2x2 网格 */
         .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 15px; }
         
-        /* 细分项与彩色进度条 */
         .sub-name { font-size: 13px; color: #636e72; font-weight: bold; }
         .sub-score { float: right; font-weight: bold; color: #2d3436; }
         .progress-bg { height: 6px; background: #f0f2f5; border-radius: 3px; margin: 8px 0; overflow: hidden; }
         .progress-val { height: 100%; border-radius: 3px; width: 0%; transition: width 1s; }
         
-        /* 优缺点文字 */
         .desc-box { font-size: 11px; margin-bottom: 4px; display: flex; align-items: flex-start; line-height: 1.4; }
         .desc-icon { margin-right: 5px; font-size: 12px; }
 
-        /* 颜值类型 */
         .type-badge {
             background: linear-gradient(to right, #43e97b 0%, #38f9d7 100%);
             color: white; padding: 6px 15px; border-radius: 20px;
-            font-size: 12px; display: inline-block; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(67, 233, 123, 0.3);
+            font-size: 12px; display: inline-block; margin-bottom: 15px;
         }
 
-        /* 化妆建议 - 彩色方块 */
         .makeup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .makeup-box {
             background: white; border-radius: 12px; padding: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 4px solid #ddd;
         }
-        /* 为每个建议分配不同颜色 */
-        .makeup-box:nth-child(1) { border-color: #ff9a9e; }
-        .makeup-box:nth-child(2) { border-color: #a18cd1; }
-        .makeup-box:nth-child(3) { border-color: #fad0c4; }
-        .makeup-box:nth-child(4) { border-color: #8fd3f4; }
-        .makeup-box:nth-child(5) { border-color: #84fab0; }
-        .makeup-box:nth-child(6) { border-color: #fccb90; }
-
         .mk-title { font-size: 13px; font-weight: bold; color: var(--text-dark); margin-bottom: 5px; }
         .mk-text { font-size: 11px; color: var(--text-gray); }
+
+        /* --- 海报生成专用区域 (隐藏) --- */
+        #posterTemplate {
+            position: absolute; top: -9999px; left: 0;
+            width: 375px; /* 朋友圈海报标准宽度 */
+            background: linear-gradient(to bottom, #fff1eb 0%, #ace0f9 100%);
+            padding: 30px; box-sizing: border-box;
+            border-radius: 0; text-align: center;
+        }
+        .poster-card {
+            background: rgba(255,255,255,0.9); border-radius: 20px; padding: 30px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .poster-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            background: white; padding: 15px; border-radius: 15px;
+        }
+
+        /* --- 海报弹窗 --- */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 200; display: none;
+            justify-content: center; align-items: center; flex-direction: column;
+        }
+        .modal img { max-width: 80%; border-radius: 15px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .modal-tip { color: white; margin-top: 15px; font-size: 14px; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; }
+        .close-btn { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; }
 
         #resultPage { display: none; }
         .loading { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.9); display: none; justify-content: center; align-items: center; z-index: 100; flex-direction: column; }
@@ -158,7 +166,6 @@
             <div class="card" style="text-align: center; padding: 40px 20px;">
                 <h2 style="color: #2d3436; margin-bottom: 10px;">欢迎开启美学之旅</h2>
                 <p style="font-size:12px; color:#b2bec3;">私密测评 · 仅限受邀用户</p>
-                
                 <div class="input-group">
                     <input type="text" id="code" class="code-input" placeholder="请输入您的专属邀请码">
                     <br>
@@ -183,23 +190,15 @@
             </div>
 
             <div class="card">
-                <div class="card-header" style="color: var(--color-senses);">
-                    <i class="fas fa-heart" style="margin-right: 10px;"></i> 五官分析
-                </div>
+                <div class="card-header" style="color: var(--color-senses);"><i class="fas fa-heart" style="margin-right: 10px;"></i> 五官分析</div>
                 <div class="grid-2x2" id="gridSenses"></div>
             </div>
-
             <div class="card">
-                <div class="card-header" style="color: var(--color-bone);">
-                    <i class="fas fa-cube" style="margin-right: 10px;"></i> 骨相分析
-                </div>
+                <div class="card-header" style="color: var(--color-bone);"><i class="fas fa-cube" style="margin-right: 10px;"></i> 骨相分析</div>
                 <div class="grid-2x2" id="gridBone"></div>
             </div>
-
             <div class="card">
-                <div class="card-header" style="color: var(--color-skin);">
-                    <i class="fas fa-leaf" style="margin-right: 10px;"></i> 皮相分析
-                </div>
+                <div class="card-header" style="color: var(--color-skin);"><i class="fas fa-leaf" style="margin-right: 10px;"></i> 皮相分析</div>
                 <div class="grid-2x2" id="gridSkin"></div>
             </div>
 
@@ -211,27 +210,54 @@
             </div>
 
             <div class="card">
-                <div class="card-header" style="color: var(--color-makeup);">
-                    <i class="fas fa-magic" style="margin-right: 10px;"></i> 定制妆容
-                </div>
+                <div class="card-header" style="color: var(--color-makeup);"><i class="fas fa-magic" style="margin-right: 10px;"></i> 定制妆容</div>
                 <div class="makeup-grid" id="makeupGrid"></div>
             </div>
 
-            <button class="btn-rainbow" style="background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);" onclick="location.reload()">重新测试</button>
+            <button class="btn-rainbow" onclick="generatePoster()" style="background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); box-shadow: 0 5px 15px rgba(132, 250, 176, 0.4);">
+                <i class="fas fa-share-alt"></i> 生成分享海报
+            </button>
+            <button class="btn-rainbow" style="background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); margin-top: 15px;" onclick="location.reload()">重新测试</button>
         </div>
     </div>
 </div>
 
+<div id="posterTemplate">
+    <div style="font-size: 20px; font-weight: bold; color: #2d3436; margin-bottom: 20px; letter-spacing: 2px;">AI 颜值美学实验室</div>
+    <div class="poster-card">
+        <div style="font-size: 14px; color: #636e72;">综合美学评分</div>
+        <div class="score-big" id="posterScore" style="font-size: 80px;">0.0</div>
+        <div class="type-badge" id="posterType" style="margin-top: 15px; transform: scale(1.2);">--</div>
+        <div style="margin-top: 20px; font-size: 14px; color: #2d3436; line-height: 1.6;">
+            经 AI 大数据分析，您的五官比例与骨相结构极其独特。
+            <br>
+            <span style="color: #a18cd1; font-weight: bold;">"美是独一无二的算法"</span>
+        </div>
+    </div>
+    <div class="poster-footer">
+        <div style="text-align: left;">
+            <div style="font-weight: bold; font-size: 14px; color: #2d3436;">扫码立即测试</div>
+            <div style="font-size: 12px; color: #636e72; margin-top: 5px;">邀请码: <span style="color: #fa709a; font-weight: bold;">AIFACE26</span></div>
+        </div>
+        <div id="qrcode"></div> </div>
+</div>
+
+<div class="modal" id="posterModal" onclick="closeModal()">
+    <div class="close-btn">&times;</div>
+    <img id="posterImg" src="">
+    <div class="modal-tip">长按图片保存 发送给朋友</div>
+</div>
+
 <div class="loading" id="loading">
     <i class="fas fa-spinner fa-spin" style="font-size:50px; background: -webkit-linear-gradient(#fa709a, #fee140); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-    <p style="margin-top:20px; color:#636e72;">AI 正在绘制七彩美学报告...</p>
+    <p style="margin-top:20px; color:#636e72;">AI 正在分析...</p>
 </div>
 
 <script>
+    // 验证逻辑
     function verify() {
         const code = document.getElementById('code').value;
         if(!code) return alert("请输入邀请码");
-        
         fetch('/verify_code', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({code})})
         .then(r=>r.json()).then(d=>{
             if(d.success) {
@@ -241,6 +267,7 @@
         });
     }
 
+    // 上传逻辑
     document.getElementById('fileInput').addEventListener('change', function(e){
         if(!e.target.files[0]) return;
         document.getElementById('loading').style.display='flex';
@@ -257,6 +284,7 @@
         });
     });
 
+    // 渲染页面
     function renderSubItems(data, elementId, color) {
         let html = '';
         data.forEach(item => {
@@ -279,31 +307,68 @@
         document.getElementById('resultPage').style.display='block';
 
         document.getElementById('totalScore').innerText = d.total_score;
+        document.getElementById('posterScore').innerText = d.total_score; // 填入海报
 
-        // 渲染三大板块，传入不同的颜色
-        renderSubItems(d.details.senses, 'gridSenses', '#ff6b6b'); // 红
-        renderSubItems(d.details.bone, 'gridBone', '#4facfe');   // 蓝
-        renderSubItems(d.details.skin, 'gridSkin', '#43e97b');   // 绿
+        renderSubItems(d.details.senses, 'gridSenses', '#ff6b6b');
+        renderSubItems(d.details.bone, 'gridBone', '#4facfe');
+        renderSubItems(d.details.skin, 'gridSkin', '#43e97b');
 
-        // 类型
         document.getElementById('typeBadge').innerText = d.type_info.badge;
+        document.getElementById('posterType').innerText = d.type_info.badge; // 填入海报
+        
         document.getElementById('typeDesc').innerText = d.type_info.desc;
         document.getElementById('typeTags').innerHTML = d.type_info.tags.map(t=>
             `<span style="background:white; border:1px solid #ddd; padding:4px 10px; border-radius:15px; font-size:12px; color:#636e72">${t}</span>`
         ).join('');
 
-        // 化妆建议
         const mk = d.makeup;
         const keys = ['base', 'eye', 'blush', 'lip', 'brow', 'high'];
         let html = '';
-        keys.forEach(k => {
+        keys.forEach((k, i) => {
+            const colors = ['#ff9a9e', '#a18cd1', '#fad0c4', '#8fd3f4', '#84fab0', '#fccb90'];
             html += `
-            <div class="makeup-box">
+            <div class="makeup-box" style="border-left-color:${colors[i]}">
                 <div class="mk-title">${mk[k].title}</div>
                 <div class="mk-text">${mk[k].content}</div>
             </div>`;
         });
         document.getElementById('makeupGrid').innerHTML = html;
+
+        // 预先生成二维码
+        document.getElementById('qrcode').innerHTML = "";
+        new QRCode(document.getElementById("qrcode"), {
+            text: window.location.href, // 自动获取当前网址
+            width: 80,
+            height: 80,
+            colorDark : "#2d3436",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    }
+
+    // --- 海报生成核心逻辑 ---
+    function generatePoster() {
+        const posterNode = document.getElementById('posterTemplate');
+        const modal = document.getElementById('posterModal');
+        const img = document.getElementById('posterImg');
+        
+        // 临时显示模板以便截图
+        posterNode.style.top = "0";
+        posterNode.style.zIndex = "-1"; // 放在底下
+
+        html2canvas(posterNode, {
+            useCORS: true,
+            scale: 2, // 2倍清晰度
+            backgroundColor: null
+        }).then(canvas => {
+            img.src = canvas.toDataURL("image/png");
+            modal.style.display = "flex"; // 显示弹窗
+            posterNode.style.top = "-9999px"; // 藏回去
+        });
+    }
+
+    function closeModal() {
+        document.getElementById('posterModal').style.display = "none";
     }
 </script>
 
