@@ -14,7 +14,7 @@ SECRET_KEY = '9fIs1JIFu9gHkZD8vWVujerZ7IdnsFYZ'
 client = AipFace(APP_ID, API_KEY, SECRET_KEY)
 
 # ▼▼▼ 1. 修改这里：设置你的私密邀请码 ▼▼▼
-VALID_CODES = ["AIFACE26"] 
+VALID_CODES = ["GEX7KD"] 
 
 # --- 数据与文案库 (保持原样) ---
 DETAIL_DB = {
@@ -106,4 +106,5 @@ def upload():
         return jsonify({"success": False, "msg": "系统繁忙"})
 
 if __name__ == '__main__':
+
     app.run(debug=True, port=5000)
